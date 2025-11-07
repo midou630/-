@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>مولد وثيقة إدارية</title>
+<style>
+  body {
+    font-family: "Arial", sans-serif;
+    background: #f2f2f2;
+    margin: 0;
+    padding: 0;
+    direction: rtl;
+  }
+  .container {
+    max-width: 800px;
+    margin: 30px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+  h2 { text-align: center; margin-bottom: 20px; }
+  label { display: block; margin-top: 12px; font-weight: bold; }
+  input, textarea {
+    width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 8px;
+  }
+  button {
+    margin-top: 20px;
+    padding: 12px 20px;
+    background: #0066cc;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  button:hover { background: #004c99; }
+
+  /* الوثيقة */
+  #document {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 25mm;
+    border: 2px solid black;
+    background: white;
+    margin: auto;
+    display: none;
+    box-sizing: border-box;
+}
+  .header {
+    text-align: center;
+    font-weight: bold;
+    line-height: 1.6;
+  }
+  .content {
+    margin-top: 25px;
+    font-size: 18px;
+    line-height: 1.8;
+  }
+  .footer {
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>مولد وثيقة إدارية رسمية</h2>
+
+  <label>الاسم واللقب</label>
+  <input type="text" id="fullname" />
+
+  <label>العمر</label>
+  <input type="number" id="age" />
+
+  <label>العنوان</label>
+  <input type="text" id="address" />
+
+  <label>نص إضافي داخل الوثيقة (اختياري)</label>
+  <textarea id="extra" rows="4"></textarea>
+
+  <button onclick="generateDoc()">إنشاء الوثيقة</button>
+  <button onclick="downloadPDF()">تحميل PDF</button>
+</div>
+
+<div id="document">
+  <div class="header">
+    الجمهورية الجزائرية الديمقراطية الشعبية<br>
+    <br>
+    مديرية ....................قسنطينة.......................
+  </div>
+
+  <div class="content">
+    يشهد السيد/السيدة: <span id="d_fullname"></span><br>
+    البالغ من العمر: <span id="d_age"></span> سنة<br>
+    القاطن بعنوان: <span id="d_address"></span><br><br>
+    <span id="d_extra"></span>
+  </div>
+
+  <div class="footer">
+    <div>التوقيع: ............................</div>
+    <div>التاريخ: <span id="date"></span></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+<script>
+function generateDoc() {
+  document.getElementById("document").style.display = "block";
+
+  document.getElementById("d_fullname").textContent = document.getElementById("fullname").value;
+  document.getElementById("d_age").textContent = document.getElementById("age").value;
+  document.getElementById("d_address").textContent = document.getElementById("address").value;
+  document.getElementById("d_extra").textContent = document.getElementById("extra").value;
+
+  const today = new Date().toLocaleDateString("ar-DZ");
+  document.getElementById("date").textContent = today;
+}
+
+function downloadPDF() {
+  const doc = document.getElementById("document");
+  const opt = {
+    margin: 10,
+    filename: 'وثيقة_إدارية.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+  html2pdf().from(doc).set(opt).save();
+}
+</script>
+
+</body>
+</html>
